@@ -8,7 +8,22 @@ import { Ionicons } from '@expo/vector-icons';
 import AppNavigator from './navigation/AppNavigator';
 
 import IntroScreen from './screens/IntroScreen';
-import Welcome from './screens/Login/Welcome'; 
+import Navigation from './screens/Login';
+
+import * as firebase from 'firebase';
+
+console.disableYellowBox = true;
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBMemWFNuj0NSFs2HDz8p6_2Pnv6LALlMk",
+  authDomain: "pakswap-2f7ae.firebaseapp.com",
+  databaseURL: "https://pakswap-2f7ae.firebaseio.com",
+  projectId: "pakswap-2f7ae",
+  storageBucket: "pakswap-2f7ae.appspot.com",
+  messagingSenderId: "168408814405",
+  appId: "1:168408814405:web:ef42f0b02e6a1f8e96e42c",
+  measurementId: "G-VGPPY21ZJ0"
+};
 
 export default class App extends React.Component {
   
@@ -21,11 +36,12 @@ export default class App extends React.Component {
       loggedIn: false,
     }
 
-    this.loadResourcesAsync = this.loadResourcesAsync.bind(this)
-    this._retrieveAsyncStorageData = this._retrieveAsyncStorageData.bind(this)
-    this.handleLoadingError = this.handleLoadingError.bind(this)
-    this.handleFinishLoading = this.handleFinishLoading.bind(this)
-    this.saveAndChangeintroDone = this.saveAndChangeintroDone.bind(this)
+    this.loadResourcesAsync = this.loadResourcesAsync.bind(this);
+    this._retrieveAsyncStorageData = this._retrieveAsyncStorageData.bind(this);
+    this.handleLoadingError = this.handleLoadingError.bind(this);
+    this.handleFinishLoading = this.handleFinishLoading.bind(this);
+    this.saveAndChangeintroDone = this.saveAndChangeintroDone.bind(this);
+    this.intializeFirebase = this.intializeFirebase.bind(this);
   }
 
   async loadResourcesAsync() {
@@ -43,6 +59,7 @@ export default class App extends React.Component {
       })
     ]).then((values) => {
       this._retrieveAsyncStorageData();
+      this.intializeFirebase();
     });
   }
   
@@ -56,6 +73,16 @@ export default class App extends React.Component {
       }
     } catch (error) {
       return;
+    }
+  };
+
+  intializeFirebase () {
+    if(!firebase.apps.length){
+      console.log("Initiated")
+      firebase.initializeApp(firebaseConfig)
+    } else {
+      console.log("Already done")
+      firebase.app();
     }
   };
   
@@ -90,7 +117,7 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {introDone ? (loggedIn ? <AppNavigator/> : <Welcome/>) : <IntroScreen onDone={this.saveAndChangeintroDone}/>}
+          {introDone ? (loggedIn ? <AppNavigator/> : <Navigation/>) : <IntroScreen onDone={this.saveAndChangeintroDone}/>}
         </View>
       );
     }

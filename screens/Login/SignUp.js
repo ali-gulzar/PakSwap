@@ -1,0 +1,99 @@
+import React, { Component } from 'react';
+import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet } from 'react-native';
+
+import { Button, Block, Input, Text } from '../../components';
+import { theme } from '../../constants';
+
+const VALID_PHONENUMBER = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
+
+
+export default class SignUp extends Component {
+  state = {
+    phonenumber: null,
+    name: "",
+    password: null,
+    errors: [],
+    loading: false,
+  }
+
+  handleSignUp() {
+    const { navigation } = this.props;
+    const { phonenumber, name, password } = this.state;
+    const errors = [];
+
+    Keyboard.dismiss();
+    this.setState({ loading: true });
+
+    // check with backend API or with some static data
+    // if (!VALID_PHONENUMBER.test(phonenumber)) errors.push('phonenumber');
+    // if (!(name.match(/[a-z]/i) && name.length < 10)) errors.push('name');
+    // if (!password) errors.push('password');
+
+    this.setState({ errors, loading: false });
+
+    if (!errors.length) {
+        navigation.navigate('Verify')
+    }
+  }
+
+  render() {
+    const { navigation } = this.props;
+    const { loading, errors } = this.state;
+    const hasErrors = key => errors.includes(key) ? styles.hasErrors : null;
+
+    return (
+      <KeyboardAvoidingView style={styles.signup} behavior="padding">
+        <Block padding={[0, theme.sizes.base * 2]}>
+          <Text h1 bold>Sign Up</Text>
+          <Block middle>
+            <Input
+                phonenumber
+                label="Phone Number"
+                error={hasErrors('phonenumber')}
+                style={[styles.input, hasErrors('phonenumber')]}
+                defaultValue={this.state.phonenumber}
+                onChangeText={text => this.setState({ phonenumber: text })}
+            />
+            <Input
+              label="Name"
+              error={hasErrors('name')}
+              style={[styles.input, hasErrors('name')]}
+              defaultValue={this.state.name}
+              onChangeText={text => this.setState({ name: text })}
+            />
+            <Input
+              secure
+              label="Password"
+              error={hasErrors('password')}
+              style={[styles.input, hasErrors('password')]}
+              defaultValue={this.state.password}
+              onChangeText={text => this.setState({ password: text })}
+            />
+            <Button gradient onPress={() => this.handleSignUp()}>
+              {loading ?
+                <ActivityIndicator size="small" color="white" /> :
+                <Text bold white center>Sign Up</Text>
+              }
+            </Button>
+          </Block>
+        </Block>
+      </KeyboardAvoidingView>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  signup: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  input: {
+    borderRadius: 0,
+    borderWidth: 0,
+    borderBottomColor: theme.colors.gray2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  hasErrors: {
+    borderBottomColor: theme.colors.accent,
+  }
+})

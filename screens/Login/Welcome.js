@@ -8,6 +8,10 @@ import Colors from '../../constants/Colors';
 
 class Welcome extends Component {
 
+  static navigationOptions = {
+    header: null,
+  }
+
   scrollX = new Animated.Value(0);
 
   state = {
@@ -75,7 +79,7 @@ class Welcome extends Component {
   }
   
   render() {
-
+    const { navigation } = this.props;
     return (
       <Block>
         <Block center bottom flex={0.4}>
@@ -91,10 +95,10 @@ class Welcome extends Component {
           {this.renderIllustrations()}
         </Block>
         <Block middle flex={0.5} margin={[0, theme.sizes.padding * 2]}>
-          <Button gradient onPress={() => console.warn("Login")}>
+          <Button gradient onPress={() => navigation.navigate('Login')}>
             <Text center semibold white>Login</Text>
           </Button>
-          <Button shadow onPress={() => console.warn("Signup")}>
+          <Button shadow onPress={() => navigation.navigate('SignUp')}>
             <Text center semibold>Signup</Text>
           </Button>
           <Button onPress={() => this.setState({ showTerms: true })}>
