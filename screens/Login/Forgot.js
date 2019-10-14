@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image } from 'react-native';
 
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
@@ -7,6 +7,27 @@ import { theme } from '../../constants';
 const VALID_EMAIL = "";
 
 export default class Forgot extends Component {
+
+  static navigationOptions = {
+    headerStyle: {
+    height: 16 * 4,
+    backgroundColor: theme.colors.white, // or 'white
+    borderBottomColor: "transparent",
+    elevation: 0, // for android
+    },
+    headerBackImage: <Image source={require('../../assets/icons/back.png')} />,
+    headerBackTitle: null,
+    headerLeftContainerStyle: {
+    alignItems: 'center',
+    marginLeft: 16 * 2,
+    paddingRight: 16,
+    },
+    headerRightContainerStyle: {
+    alignItems: 'center',
+    paddingRight: 16,
+    },
+};
+
   state = {
     email: VALID_EMAIL,
     errors: [],

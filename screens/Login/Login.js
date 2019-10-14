@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet } from 'react-native'
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image } from 'react-native'
 
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
@@ -8,6 +8,27 @@ const VALID_EMAIL = "asds"
 const VALID_PASSWORD = "dasd" 
 
 export default class LoginScreen extends Component {
+
+  static navigationOptions = {
+    headerStyle: {
+    height: 16 * 4,
+    backgroundColor: theme.colors.white, // or 'white
+    borderBottomColor: "transparent",
+    elevation: 0, // for android
+    },
+    headerBackImage: <Image source={require('../../assets/icons/back.png')} />,
+    headerBackTitle: null,
+    headerLeftContainerStyle: {
+    alignItems: 'center',
+    marginLeft: 16 * 2,
+    paddingRight: 16,
+    },
+    headerRightContainerStyle: {
+    alignItems: 'center',
+    paddingRight: 16,
+    },
+  };
+
   state = {
     email: "",
     password: "",

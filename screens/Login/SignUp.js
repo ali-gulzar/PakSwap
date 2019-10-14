@@ -1,13 +1,34 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image } from 'react-native';
 
 import { Button, Block, Input, Text } from '../../components';
-import { theme } from '../../constants';
+import { theme, navOptions } from '../../constants';
 
 const VALID_PHONENUMBER = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
 
 
 export default class SignUp extends Component {
+
+  static navigationOptions = {
+      headerStyle: {
+      height: 16 * 4,
+      backgroundColor: theme.colors.white, // or 'white
+      borderBottomColor: "transparent",
+      elevation: 0, // for android
+      },
+      headerBackImage: <Image source={require('../../assets/icons/back.png')} />,
+      headerBackTitle: null,
+      headerLeftContainerStyle: {
+      alignItems: 'center',
+      marginLeft: 16 * 2,
+      paddingRight: 16,
+      },
+      headerRightContainerStyle: {
+      alignItems: 'center',
+      paddingRight: 16,
+      },
+  };
+
   state = {
     phonenumber: null,
     name: "",
