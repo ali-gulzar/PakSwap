@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image } from 'react-native'
-
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image, Modal } from 'react-native'
+import {WebView} from 'react-native-webview';
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
+import url from 'url';
+import * as firebase from 'firebase';
 
-const VALID_EMAIL = "asds"
-const VALID_PASSWORD = "dasd" 
+const VALID_PHONENUMBER = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
+
+const captchaUrl = `https://ali-gulzar.github.io/HostRecaptcha/`
 
 export default class LoginScreen extends Component {
 
@@ -27,41 +30,86 @@ export default class LoginScreen extends Component {
     alignItems: 'center',
     paddingRight: 16,
     },
-  };
+};
 
-  state = {
-    email: "",
-    password: "",
+constructor(props) {
+  super(props)
+  this.state = {
+    phonenumber: "",
     errors: [],
     loading: false,
+    phoneInputEditable: true,
+    showModal: false,
   }
 
+  this.handleLogin = this.handleLogin.bind(this);
+  this.renderCaptchaView = this.renderCaptchaView.bind(this);
+  this._sendConfirmationCode = this._sendConfirmationCode.bind(this);
+
+}
+
   handleLogin() {
-    const { navigation } = this.props;
-    const { email, password } = this.state;
+    const { phonenumber } = this.state;
     const errors = [];
 
     Keyboard.dismiss();
     this.setState({ loading: true });
 
     // check with backend API or with some static data
-    if (email !== VALID_EMAIL) {
-      errors.push('email');
-    }
-    if (password !== VALID_PASSWORD) {
-      errors.push('password');
+    if (phonenumber !== VALID_PHONENUMBER) {
+      // errors.push('phonenumber');
     }
 
     this.setState({ errors, loading: false });
 
     if (!errors.length) {
-      navigation.navigate("Welcome");
+      this.setState({showModal: true})
     }
   }
 
-  render() {
+  _handleResponse = data => {
+    let query = url.parse(data.url, true).query;
+
+    if (query.hasOwnProperty('token')) {
+      this._sendConfirmationCode(query.token);
+    } else if (query.hasOwnProperty('cancel')) {
+      this.setState({ showModal: false});
+    }
+  }
+
+  _sendConfirmationCode = (captchaToken) => {
+    this.setState({ showModal: false });
+    let number = `+${this.state.phonenumber}`;
+    const captchaVerifier = {
+      type: 'recaptcha',
+      verify: () => Promise.resolve(captchaToken)
+    }
     const { navigation } = this.props;
-    const { loading, errors } = this.state;
+    firebase.auth().signInWithPhoneNumber(number, captchaVerifier)
+    .then((confirmation) => {
+      navigation.navigate('Verify', {confirmation})
+    })
+    .catch((err) => {
+      return;
+    });
+  }
+
+  renderCaptchaView() {
+    return (
+      <Modal animationType="slide" visible={this.state.showModal} onRequestClose={() => this.setState({ showModal: false })}>
+          <WebView
+            source={{ uri: captchaUrl }}
+            onNavigationStateChange={data =>
+              this._handleResponse(data)
+            }
+            injectedJavaScript={`document.f1.submit()`}
+          />
+      </Modal>
+    )
+  }
+
+  render() {
+    const { loading, errors, phoneInputEditable } = this.state;
     const hasErrors = key => errors.includes(key) ? styles.hasErrors : null;
 
     return (
@@ -70,34 +118,23 @@ export default class LoginScreen extends Component {
           <Text h1 bold>Login</Text>
           <Block middle>
             <Input
-              label="Email"
-              error={hasErrors('email')}
-              style={[styles.input, hasErrors('email')]}
-              defaultValue={this.state.email}
-              onChangeText={text => this.setState({ email: text })}
-            />
-            <Input
-              secure
-              label="Password"
-              error={hasErrors('password')}
-              style={[styles.input, hasErrors('password')]}
-              defaultValue={this.state.password}
-              onChangeText={text => this.setState({ password: text })}
+              label="Phone Number"
+              error={hasErrors('phonenumber')}
+              style={[styles.input, hasErrors('phonenumber')]}
+              defaultValue={this.state.phonenumber}
+              onChangeText={text => this.setState({ phonenumber: text })}
+              editable={phoneInputEditable}
+              keyboardType="number-pad"
             />
             <Button gradient onPress={() => this.handleLogin()}>
               {loading ?
                 <ActivityIndicator size="small" color="white" /> : 
-                <Text bold white center>Login</Text>
+                <Text bold white center>Send Verification Code</Text>
               }
-            </Button>
-
-            <Button onPress={() => navigation.navigate('Forgot')}>
-              <Text gray caption center style={{ textDecorationLine: 'underline' }}>
-                Forgot your password?
-              </Text>
             </Button>
           </Block>
         </Block>
+        {this.renderCaptchaView()}
       </KeyboardAvoidingView>
     )
   }

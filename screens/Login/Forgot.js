@@ -4,7 +4,7 @@ import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, I
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
 
-const VALID_EMAIL = "";
+const VALID_PHONENUMBER = "";
 
 export default class Forgot extends Component {
 
@@ -29,22 +29,22 @@ export default class Forgot extends Component {
 };
 
   state = {
-    email: VALID_EMAIL,
+    phonenumber: VALID_PHONENUMBER,
     errors: [],
     loading: false,
   }
 
   handleForgot() {
     const { navigation } = this.props;
-    const { email } = this.state;
+    const { phonenumber } = this.state;
     const errors = [];
 
     Keyboard.dismiss();
     this.setState({ loading: true });
 
     // check with backend API or with some static data
-    if (email !== VALID_EMAIL) {
-      errors.push('email');
+    if (phonenumber !== VALID_PHONENUMBER) {
+      errors.push('phonenumber');
     }
 
     this.setState({ errors, loading: false });
@@ -52,7 +52,7 @@ export default class Forgot extends Component {
     if (!errors.length) {
       Alert.alert(
         'Password sent!',
-        'Please check you email.',
+        'Please check you phonenumber.',
         [
           {
             text: 'OK', onPress: () => {
@@ -65,7 +65,7 @@ export default class Forgot extends Component {
     } else {
       Alert.alert(
         'Error',
-        'Please check you Email address.',
+        'Please check you phonenumber.',
         [
           { text: 'Try again', }
         ],
@@ -85,11 +85,11 @@ export default class Forgot extends Component {
           <Text h1 bold>Forgot</Text>
           <Block middle>
             <Input
-              label="Email"
-              error={hasErrors('email')}
-              style={[styles.input, hasErrors('email')]}
-              defaultValue={this.state.email}
-              onChangeText={text => this.setState({ email: text })}
+              label="Phone Number"
+              error={hasErrors('phonenumber')}
+              style={[styles.input, hasErrors('phonenumber')]}
+              defaultValue={this.state.phonenumber}
+              onChangeText={text => this.setState({ phonenumber: text })}
             />
             <Button gradient onPress={() => this.handleForgot()}>
               {loading ?

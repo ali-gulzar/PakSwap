@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Animated, Modal, ScrollView } from 'react-native';
+import { Animated, Modal, ScrollView, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 import { Button, Block, Text } from '../../components';
@@ -9,8 +9,24 @@ import Colors from '../../constants/Colors';
 class Welcome extends Component {
 
   static navigationOptions = {
-    header: null,
-  }
+    headerStyle: {
+    height: 16 * 4,
+    backgroundColor: theme.colors.white, // or 'white
+    borderBottomColor: "transparent",
+    elevation: 0, // for android
+    },
+    headerBackImage: <Image source={require('../../assets/icons/back.png')} />,
+    headerBackTitle: null,
+    headerLeftContainerStyle: {
+    alignItems: 'center',
+    marginLeft: 16 * 2,
+    paddingRight: 16,
+    },
+    headerRightContainerStyle: {
+    alignItems: 'center',
+    paddingRight: 16,
+    },
+};
 
   scrollX = new Animated.Value(0);
 
@@ -102,7 +118,7 @@ class Welcome extends Component {
             <Text center semibold>Signup</Text>
           </Button>
           <Button onPress={() => this.setState({ showTerms: true })}>
-            <Text center caption gray>Terms of service</Text>
+            <Text center caption gray style={{paddingBottom: 50}}>Terms of service</Text>
           </Button>
         </Block>
         {this.renderTermsService()}

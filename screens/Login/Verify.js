@@ -4,7 +4,7 @@ import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, I
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
 
-const VALID_PHONENUMBER = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
+const VALID_CODE = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
 
 export default class Verify extends Component {
 
@@ -26,41 +26,60 @@ export default class Verify extends Component {
     alignItems: 'center',
     paddingRight: 16,
     },
-};
+  };
 
-  state = {
-    phonenumber: "",
-    errors: [],
-    loading: false,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      code: "",
+      errors: [],
+      loading: false,
+    }
+
+    this.handleVerify = this.handleVerify.bind(this);
+    this._confirmCode = this._confirmCode.bind(this);
   }
 
-  handleForgot() {
+  handleVerify() {
     const { navigation } = this.props;
-    const { phonenumber } = this.state;
+    const { code } = this.state;
     const errors = [];
 
     Keyboard.dismiss();
     this.setState({ loading: true });
 
     // check with backend API or with some static data
-    if (phonenumber !== VALID_PHONENUMBER) {
-      // errors.push('phonenumber');
+    if (code === '') {
+      errors.push('code');
+      this.setState({ errors, loading: false });
     }
 
-    this.setState({ errors, loading: false });
-
     if (!errors.length) {
-        navigation.navigate('AppNavigator')
+      this._confirmCode(code);
     } else {
+      this.setState({loading: false})
+    }
+  }
+
+  _confirmCode = (code) => {
+    const {navigation} = this.props;
+    const confirmation = navigation.getParam('confirmation', '');
+    confirmation.confirm(code)
+    .then((result) => {
+      this.setState({loading: false})
+      navigation.navigate('AppNavigator')
+    })
+    .catch((err) => {
       Alert.alert(
         'Error',
-        'Wrong verification code.',
+        'Please enter a valid code.',
         [
           { text: 'Try again', }
         ],
         { cancelable: false }
       )
-    }
+    });
   }
 
   render() {
@@ -75,16 +94,21 @@ export default class Verify extends Component {
           <Block middle>
             <Input
               label="Verification code"
-              error={hasErrors('phonenumber')}
-              style={[styles.input, hasErrors('phonenumber')]}
-              defaultValue={this.state.phonenumber}
-              onChangeText={text => this.setState({ phonenumber: text })}
+              error={hasErrors('code')}
+              style={[styles.input, hasErrors('code')]}
+              defaultValue={this.state.code}
+              onChangeText={text => this.setState({ code: text })}
             />
-            <Button gradient onPress={() => this.handleForgot()}>
+            <Button gradient onPress={() => this.handleVerify()}>
               {loading ?
                 <ActivityIndicator size="small" color="white" /> :
                 <Text bold white center>Login</Text>
               }
+            </Button>
+            <Button onPress={() => navigation.navigate('Forgot')}>
+              <Text gray caption center style={{ textDecorationLine: 'underline' }}>
+                Resend verification code
+              </Text>
             </Button>
           </Block>
         </Block>

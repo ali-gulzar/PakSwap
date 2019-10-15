@@ -12,7 +12,7 @@ import Navigation from './screens/Login';
 
 import * as firebase from 'firebase';
 
-console.disableYellowBox = true;
+// console.disableYellowBox = true;
 
 const firebaseConfig = {
   apiKey: "AIzaSyBMemWFNuj0NSFs2HDz8p6_2Pnv6LALlMk",
@@ -60,6 +60,7 @@ export default class App extends React.Component {
     ]).then((values) => {
       this._retrieveAsyncStorageData();
       this.intializeFirebase();
+      StatusBar.setHidden(true);
     });
   }
   
@@ -78,10 +79,8 @@ export default class App extends React.Component {
 
   intializeFirebase () {
     if(!firebase.apps.length){
-      console.log("Initiated")
       firebase.initializeApp(firebaseConfig)
     } else {
-      console.log("Already done")
       firebase.app();
     }
   };
