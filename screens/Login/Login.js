@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image, Modal } from 'react-native'
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, Image, Modal, Alert } from 'react-native'
 import {WebView} from 'react-native-webview';
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
 import url from 'url';
 import * as firebase from 'firebase';
+import PhoneInput from 'react-native-phone-input'
 
 const VALID_PHONENUMBER = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
 
@@ -49,21 +50,31 @@ constructor(props) {
 }
 
   handleLogin() {
-    const { phonenumber } = this.state;
+    var { phonenumber } = this.state;
     const errors = [];
 
     Keyboard.dismiss();
     this.setState({ loading: true });
 
+    const validPhoneNumber = `+92${phonenumber}`
+    
     // check with backend API or with some static data
-    if (phonenumber !== VALID_PHONENUMBER) {
-      // errors.push('phonenumber');
+    if (!VALID_PHONENUMBER.test(validPhoneNumber)) {
+      errors.push('phonenumber');
+      this.setState({ errors, loading: false});
     }
 
-    this.setState({ errors, loading: false });
-
     if (!errors.length) {
-      this.setState({showModal: true})
+      this.setState({showModal: true, phonenumber: validPhoneNumber})
+    } else {
+      Alert.alert(
+        'Error',
+        'Please enter a valid Pakistan phone number.',
+        [
+          { text: 'Try again', }
+        ],
+        { cancelable: false }
+      )
     }
   }
 
@@ -79,7 +90,7 @@ constructor(props) {
 
   _sendConfirmationCode = (captchaToken) => {
     this.setState({ showModal: false });
-    let number = `+${this.state.phonenumber}`;
+    let number = this.state.phonenumber;
     const captchaVerifier = {
       type: 'recaptcha',
       verify: () => Promise.resolve(captchaToken)
@@ -87,10 +98,19 @@ constructor(props) {
     const { navigation } = this.props;
     firebase.auth().signInWithPhoneNumber(number, captchaVerifier)
     .then((confirmation) => {
+      this.setState({loading: false})
       navigation.navigate('Verify', {confirmation})
     })
     .catch((err) => {
-      return;
+      this.setState({loading: false})
+      Alert.alert(
+        'Error',
+        'Verification failed for this number. Please try again later.',
+        [
+          { text: 'Try again', }
+        ],
+        { cancelable: false }
+      )
     });
   }
 
@@ -117,6 +137,7 @@ constructor(props) {
         <Block padding={[0, theme.sizes.base * 2]}>
           <Text h1 bold>Login</Text>
           <Block middle>
+            <PhoneInput ref='phone' initialCountry="pk" value="+92" disabled={true}/>
             <Input
               label="Phone Number"
               error={hasErrors('phonenumber')}

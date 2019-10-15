@@ -98,6 +98,7 @@ export default class Verify extends Component {
               style={[styles.input, hasErrors('code')]}
               defaultValue={this.state.code}
               onChangeText={text => this.setState({ code: text })}
+              keyboardType="number-pad"
             />
             <Button gradient onPress={() => this.handleVerify()}>
               {loading ?
