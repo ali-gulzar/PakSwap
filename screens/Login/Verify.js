@@ -71,6 +71,7 @@ export default class Verify extends Component {
       navigation.navigate('AppNavigator')
     })
     .catch((err) => {
+      this.setState({loading: false})
       Alert.alert(
         'Error',
         'Please enter a valid code.',
