@@ -5,7 +5,7 @@ import Login from './Login';
 import Welcome from './Welcome';
 import SignUp from './SignUp';
 import Verify from './Verify';
-import AppNavigator from '../../navigation/AppNavigator';
+import AppNavigator from '../../navigation/';
 
 const screens = createStackNavigator({
   Welcome,

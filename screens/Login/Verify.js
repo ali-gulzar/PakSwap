@@ -4,6 +4,10 @@ import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, I
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
 
+import * as firebase from 'firebase';
+
+var generate = require('project-name-generator');
+
 const VALID_CODE = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
 
 export default class Verify extends Component {
@@ -39,9 +43,10 @@ export default class Verify extends Component {
 
     this.handleVerify = this.handleVerify.bind(this);
     this._confirmCode = this._confirmCode.bind(this);
+    this.makeUserData = this.makeUserData.bind(this);
   }
 
-  handleVerify() {
+  handleVerify = () => {
     const { navigation } = this.props;
     const { code } = this.state;
     const errors = [];
@@ -68,6 +73,7 @@ export default class Verify extends Component {
     confirmation.confirm(code)
     .then((result) => {
       this.setState({loading: false})
+      this.makeUserData();
       navigation.navigate('AppNavigator')
     })
     .catch((err) => {
@@ -81,6 +87,24 @@ export default class Verify extends Component {
         { cancelable: false }
       )
     });
+  }
+
+  makeUserData = () => {
+    if (firebase.auth().currentUser) {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        firebase.database().ref('users/').child(user.uid).once('value', function(snapshot) {
+          var exists = (snapshot.val() !== null);
+          if (!exists) {
+            firebase.database().ref('users/' + user.uid).set({
+              phoneNumber: user.phoneNumber,
+              name: generate().spaced,
+              items: 0
+            })
+          }
+        })
+      }
+    }
   }
 
   render() {

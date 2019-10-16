@@ -31,25 +31,25 @@ export default class LoginScreen extends Component {
     alignItems: 'center',
     paddingRight: 16,
     },
-};
+  };
 
-constructor(props) {
-  super(props)
-  this.state = {
-    phonenumber: "",
-    errors: [],
-    loading: false,
-    phoneInputEditable: true,
-    showModal: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      phonenumber: "",
+      errors: [],
+      loading: false,
+      phoneInputEditable: true,
+      showModal: false,
+    }
+
+    this.handleLogin = this.handleLogin.bind(this);
+    this.renderCaptchaView = this.renderCaptchaView.bind(this);
+    this._sendConfirmationCode = this._sendConfirmationCode.bind(this);
+
   }
-
-  this.handleLogin = this.handleLogin.bind(this);
-  this.renderCaptchaView = this.renderCaptchaView.bind(this);
-  this._sendConfirmationCode = this._sendConfirmationCode.bind(this);
-
-}
-
-  handleLogin() {
+  
+  handleLogin = () => {
     var { phonenumber } = this.state;
     const errors = [];
 
@@ -65,7 +65,7 @@ constructor(props) {
     }
 
     if (!errors.length) {
-      this.setState({showModal: true, phonenumber: validPhoneNumber})
+      this.setState({showModal: true})
     } else {
       Alert.alert(
         'Error',
@@ -84,13 +84,13 @@ constructor(props) {
     if (query.hasOwnProperty('token')) {
       this._sendConfirmationCode(query.token);
     } else if (query.hasOwnProperty('cancel')) {
-      this.setState({ showModal: false});
+      this.setState({ showModal: false });
     }
   }
 
   _sendConfirmationCode = (captchaToken) => {
     this.setState({ showModal: false });
-    let number = this.state.phonenumber;
+    let number = `+92${this.state.phonenumber}`;
     const captchaVerifier = {
       type: 'recaptcha',
       verify: () => Promise.resolve(captchaToken)
@@ -114,7 +114,7 @@ constructor(props) {
     });
   }
 
-  renderCaptchaView() {
+  renderCaptchaView = () => {
     return (
       <Modal animationType="slide" visible={this.state.showModal} onRequestClose={() => this.setState({ showModal: false })}>
           <WebView

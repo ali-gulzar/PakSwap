@@ -5,14 +5,14 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import AppNavigator from './navigation/AppNavigator';
+import AppNavigator from './navigation';
 
 import IntroScreen from './screens/IntroScreen';
 import Navigation from './screens/Login';
 
 import * as firebase from 'firebase';
 
-// console.disableYellowBox = true;
+console.disableYellowBox = true;
 
 const firebaseConfig = {
   apiKey: "AIzaSyBMemWFNuj0NSFs2HDz8p6_2Pnv6LALlMk",
@@ -42,6 +42,7 @@ export default class App extends React.Component {
     this.handleFinishLoading = this.handleFinishLoading.bind(this);
     this.saveAndChangeintroDone = this.saveAndChangeintroDone.bind(this);
     this.intializeFirebase = this.intializeFirebase.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
 
   async loadResourcesAsync() {
@@ -51,16 +52,12 @@ export default class App extends React.Component {
         require('./assets/images/robot-prod.png'),
       ]),
       Font.loadAsync({
-        // This is the font that we are using for our tab bar
         ...Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free to
-        // remove this if you are not using it in your app
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       })
     ]).then((values) => {
       this._retrieveAsyncStorageData();
       this.intializeFirebase();
-      StatusBar.setHidden(true);
     });
   }
   
@@ -77,12 +74,19 @@ export default class App extends React.Component {
     }
   };
 
-  intializeFirebase () {
+  intializeFirebase = () => {
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig)
     } else {
       firebase.app();
     }
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({loggedIn: true})
+      } else {
+        this.setState({loggedIn: false})
+      }
+   });
   };
   
   handleLoadingError(error) {
@@ -102,6 +106,10 @@ export default class App extends React.Component {
     this.setState({introDone: true})
   }
 
+  logOut = () => {
+    this.setState({loggedIn: false})
+  }
+
   render() {
     const {introDone, loggedIn} = this.state;
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -115,8 +123,8 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {introDone ? (loggedIn ? <AppNavigator/> : <Navigation/>) : <IntroScreen onDone={this.saveAndChangeintroDone}/>}
+          {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+          {introDone ? (loggedIn ? <AppNavigator logout={this.logOut}/> : <Navigation/>) : <IntroScreen onDone={this.saveAndChangeintroDone}/>}
         </View>
       );
     }
