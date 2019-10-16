@@ -24,7 +24,9 @@ class Settings extends Component {
   handleEdit(name, text) {
     const { profile } = this.state;
     profile[name] = text;
-
+    firebase.database().ref('users/' + profile["id"]).update({
+      name:text
+    })
     this.setState({ profile });
   }
 

@@ -31,7 +31,9 @@ class Browse extends Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         firebase.database().ref('users/' + user.uid).on("value", snapshot => {
-          this.setState({profile: snapshot.val()})
+          const profileData = snapshot.val()
+          profileData["id"] = user.uid 
+          this.setState({profile: profileData})
         })
       } else {
         return;
