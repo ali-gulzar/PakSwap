@@ -1,12 +1,34 @@
 import React, { Component } from 'react'
-import { Dimensions, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { Dimensions, Image, StyleSheet, ScrollView, TouchableOpacity, Modal} from 'react-native'
 import * as firebase from 'firebase';
 import { Card, Badge, Button, Block, Text } from '../components';
 import { theme, mocks } from '../constants';
+import { FloatingAction } from "react-native-floating-action";
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import AddItem from './AddItem';
+import RemoveItem from './RemoveItem';
 
 const avatar = require('../assets/images/avatar_1.jpg')
 
 const { width } = Dimensions.get('window');
+
+const actions = [
+  {
+    text: "Add Items",
+    icon: <MaterialCommunityIcons name="plus" color={Colors.white} size={20}/>,
+    name: "Add",
+    position: 1
+  },
+  // {
+  //   text: "Delete items",
+  //   icon: <Ionicons name="md-trash" color={Colors.white} size={20}/>,
+  //   name: "Delete",
+  //   position: 2,
+  //   color: "red"
+  // }
+];
 
 class Browse extends Component {
 
@@ -15,11 +37,18 @@ class Browse extends Component {
     this.state = {
       active: 'Products',
       categories: [],
-      profile: {}
+      profile: {},
+      showAddItem: false,
+      showDeleteItem: false,
+      userID: null,
+      items: null
     }
 
     this.getUserData = this.getUserData.bind(this);
-
+    this.closeModal = this.closeModal.bind(this);
+    this.renderAddItem = this.renderAddItem.bind(this);
+    this.renderRemoveItem = this.renderRemoveItem.bind(this);
+    this.handlePress = this.handlePress.bind(this);
   }
 
   componentWillMount() {
@@ -32,8 +61,8 @@ class Browse extends Component {
       if (user) {
         firebase.database().ref('users/' + user.uid).on("value", snapshot => {
           const profileData = snapshot.val()
-          profileData["id"] = user.uid 
-          this.setState({profile: profileData})
+          profileData["id"] = user.uid
+          this.setState({profile: profileData, userID: user.uid, items: profileData['items']})
         })
       } else {
         return;
@@ -41,39 +70,37 @@ class Browse extends Component {
     });
   }
 
-  handleTab = tab => {
-    const { categories } = this.props;
-    const filtered = categories.filter(
-      category => category.tags.includes(tab.toLowerCase())
-    );
-
-    this.setState({ active: tab, categories: filtered });
+  closeModal = () => {
+    this.setState({showAddItem: false, showDeleteItem: false})
   }
 
-  renderTab = (tab) => {
-    const { active } = this.state;
-    const isActive = active === tab;
-
-    return (
-      <TouchableOpacity
-        key={`tab-${tab}`}
-        onPress={() => this.handleTab(tab)}
-        style={[
-          styles.tab,
-          isActive ? styles.active : null
-        ]}
-      >
-        <Text size={16} medium gray={!isActive} secondary={isActive}>
-          {tab}
-        </Text>
-      </TouchableOpacity>
+  renderAddItem = () => {
+    return(
+        <Modal animationType="slide" visible={this.state.showAddItem} onRequestClose={() => this.setState({ showAddItem: false })}>
+          <AddItem close={this.closeModal} user={this.state.userID} items={this.state.items} />
+        </Modal>
     )
   }
 
+  renderRemoveItem = () => {
+    return(
+      <Modal animationType="slide" visible={this.state.showDeleteItem} onRequestClose={() => this.setState({ showDeleteItem: false })}>
+          <RemoveItem close={this.closeModal} user={this.state.userID}/>
+      </Modal>
+    )
+  }
+  
+  handlePress = (name) => {
+    if (name === "Add") {
+      this.setState({showAddItem: true})
+    } else {
+      this.setState({showDeleteItem: true})
+    }
+  }
+
   render() {
-    const { profile, navigation } = this.props;
+    const { navigation } = this.props;
     const { categories } = this.state;
-    const tabs = ['Products', 'Inspirations', 'Shop'];
 
     return (
       <Block>
@@ -108,6 +135,15 @@ class Browse extends Component {
             ))}
           </Block>
         </ScrollView>
+        <FloatingAction
+          actions={actions}
+          color={Colors.primary}
+          showBackground={false}
+          floatingIcon={<Ionicons name="md-options" size={22} color={Colors.white}/>}
+          onPressItem={name => this.handlePress(name)}
+        />
+        {this.renderAddItem()}
+        {this.renderRemoveItem()}
       </Block>
     )
   }
@@ -127,20 +163,6 @@ const styles = StyleSheet.create({
   avatar: {
     height: theme.sizes.base * 5.2,
     width: theme.sizes.base * 5.2,
-  },
-  tabs: {
-    borderBottomColor: theme.colors.gray2,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginVertical: theme.sizes.base,
-    marginHorizontal: theme.sizes.base * 2,
-  },
-  tab: {
-    marginRight: theme.sizes.base * 2,
-    paddingBottom: theme.sizes.base
-  },
-  active: {
-    borderBottomColor: theme.colors.secondary,
-    borderBottomWidth: 3,
   },
   categories: {
     flexWrap: 'wrap',

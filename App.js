@@ -12,7 +12,7 @@ import Navigation from './screens/Login';
 
 import * as firebase from 'firebase';
 
-console.disableYellowBox = true;
+// console.disableYellowBox = true;
 
 const firebaseConfig = {
   apiKey: "AIzaSyBMemWFNuj0NSFs2HDz8p6_2Pnv6LALlMk",
@@ -33,7 +33,7 @@ export default class App extends React.Component {
     this.state = {
       isLoadingComplete: false,
       introDone: false,
-      loggedIn: false,
+      loggedIn: true,
     }
 
     this.loadResourcesAsync = this.loadResourcesAsync.bind(this);

@@ -18,6 +18,7 @@ class Settings extends Component {
 
   componentWillMount() {
     const {navigation} = this.props;
+    // const profileData = navigation.getParam('profile')
     this.setState({profile: navigation.getParam('profile')})
   }
 
