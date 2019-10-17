@@ -51,7 +51,7 @@ class Browse extends Component {
       showDeleteItem: false,
       showFeedback: false,
       userID: null,
-      items: null
+      items: null,
     }
 
     this.getUserData = this.getUserData.bind(this);
@@ -118,6 +118,11 @@ class Browse extends Component {
     }
   }
 
+  handleCategory = (category) => {
+    const {navigation} = this.props;
+
+  }
+
   render() {
     const { navigation } = this.props;
     const { categories } = this.state;
@@ -142,14 +147,14 @@ class Browse extends Component {
             {categories.map(category => (
               <TouchableOpacity
                 key={category.name}
-                onPress={() => navigation.navigate('Explore', { category })}
+                onPress={() => navigation.navigate('Explore', {category: category.name})}
               >
                 <Card center middle shadow style={styles.category}>
                   <Badge margin={[0, 0, 15]} size={50} color="rgba(41,216,143,0.20)">
-                    <MaterialCommunityIcons name="plus" color={Colors.accent} size={20}/>
+                      {category.image}
                   </Badge>
                   <Text medium height={20}>{category.name}</Text>
-                  <Text gray caption>{category.count} products</Text>
+                  <Text gray caption>{category.description}</Text>
                 </Card>
               </TouchableOpacity>
             ))}

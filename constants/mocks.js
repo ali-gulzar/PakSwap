@@ -1,45 +1,56 @@
+import React from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+import Colors from './Colors';
+
 const categories = [
   {
-    id: 'plants',
+    id: 'electronics',
     name: 'Electronics',
     tags: ['products', 'inspirations'],
     count: 147,
-    image: require('../assets/icons/plants.png')
+    description:"Accessories",
+    image: <MaterialCommunityIcons name="washing-machine" color={Colors.primary} size={25}/>
   },
   {
-    id: 'seeds',
+    id: 'games',
     name: 'Games',
     tags: ['products', 'shop'],
     count: 16,
-    image: require('../assets/icons/seeds.png')
+    description:"Consoles games",
+    image: <Entypo name="game-controller" color={Colors.tertiary} size={25}/>
   },
   {
-    id: 'flowers',
+    id: 'books',
     name: 'Books',
     tags: ['products', 'inspirations'],
     count: 68,
-    image: require('../assets/icons/flowers.png')
+    description:"For Geeks",
+    image: <Entypo name="book" color="#1253bc" size={25}/>
   },
   {
-    id: 'sprayers',
+    id: 'mobilePhones',
     name: 'Mobile Phones',
     tags: ['products', 'shop'],
     count: 17,
-    image: require('../assets/icons/sprayers.png')
+    description:"Apple - Other",
+    image: <Entypo name="mobile" color={Colors.gray} size={25}/>
   },
   {
-    id: 'pots',
-    name: 'Clothes',
-    tags: ['products', 'shop'],
-    count: 47,
-    image: require('../assets/icons/pots.png')
-  },
-  {
-    id: 'fertilizers',
+    id: 'free',
     name: 'Free',
     tags: ['products', 'shop'],
     count: 47,
-    image: require('../assets/icons/fertilizers.png')
+    description:"Out of use",
+    image: <Entypo name="log-out" color={Colors.accent} size={25}/>
+  },
+  {
+    id: 'other',
+    name: 'Other',
+    tags: ['products', 'shop'],
+    count: 47,
+    description:"Others",
+    image: <Entypo name="star" color={Colors.black} size={25}/>
   },
 ];
 

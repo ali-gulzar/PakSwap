@@ -10,7 +10,7 @@ import Colors from '../constants/Colors';
 import Toast from 'react-native-root-toast';
 import SimplePicker from 'react-native-simple-picker';
 
-const options = ['Electronics', 'Games', 'Books', 'Clothes','Free', 'Other']
+const options = ['Electronics', 'Games', 'Books', 'Mobile Phones','Free', 'Other']
 
 export default class AddItem extends Component {
 
