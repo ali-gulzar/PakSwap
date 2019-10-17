@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import { Animated, Dimensions, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { Animated, Dimensions, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Button, Input, Block, Text } from '../components';
+import { Card, Badge, Button, Input, Block, Text } from '../components';
 import { theme, mocks } from '../constants';
+import Toast from 'react-native-root-toast';
+
+import * as firebase from 'firebase';
 
 import {
   Placeholder,
@@ -22,16 +25,26 @@ export default class Explore extends Component {
     this.state = { 
       searchFocus: new Animated.Value(0.6),
       searchString: null,
-      category: ""
+      category: "",
+      searchDone: false,
+      data: [],
     }
-
-    this.renderLoader = this.renderLoader.bind(this);
 
   }
 
   componentWillMount () {
-    const {navigation} = this.props;
-    this.setState({category: navigation.getParam('category')})
+    const {navigation, categories} = this.props;
+    const category = navigation.getParam('category');
+    this.setState({category, categories })
+    this.getData(category)
+  }
+
+  getData = async(category) => {
+    await firebase.database().ref(category).on('value', snapshot => {
+      if (snapshot.val()) {
+        this.setState({searchDone: true, data: Object.values(snapshot.val())})
+      } else {this.setState({searchDone: true})}
+    })
   }
 
   handleSearchFocus(status) {
@@ -73,47 +86,46 @@ export default class Explore extends Component {
     )
   }
 
-  renderImage(img, index) {
-    const { navigation } = this.props;
-    const sizes = Image.resolveAssetSource(img);
-    const fullWidth = width - (theme.sizes.padding * 2.5);
-    const resize = (sizes.width * 100) / fullWidth;
-    const imgWidth = resize > 75 ? fullWidth : sizes.width * 1;
-
-    return (
-      <TouchableOpacity
-        key={`img-${index}`}
-        onPress={() => navigation.navigate('Product')}
-      >
-        <Image
-          source={img}
-          style={[
-            styles.image,
-            { minWidth: imgWidth, maxWidth: imgWidth }
-          ]}
-        />
-      </TouchableOpacity>
-    )
-  }
-
   renderExplore() {
-    const { images, navigation } = this.props;
-    const mainImage = images[0];
+    const { navigation } = this.props;
+    const {data, category} = this.state;
+
+    if(!data) {
+      // Toast.show(`No ${category} in the market yet.`, {
+      //   duration: 1000,
+      //   position: Toast.positions.CENTER,
+      //   shadow: true,
+      //   animation: true,
+      //   hideOnPress: true,
+      //   delay: 0,
+      //   backgroundColor: theme.colors.primary,
+      //   paddingTop: 20,
+      // })
+      return;
+    }
 
     return (
-      <Block style={{ marginBottom: height / 3 }}>
-        <TouchableOpacity
-          style={[ styles.image, styles.mainImage ]}
-          onPress={() => navigation.navigate('Product')}
+      <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ paddingVertical: theme.sizes.base * 2}}
         >
-          <Image source={mainImage} style={[styles.image, styles.mainImage]} />
-        </TouchableOpacity>
-        <Block row space="between" wrap>
-          {
-            images.slice(1).map((img, index) => this.renderImage(img, index))
-          }
-        </Block>
-      </Block>
+          <Block flex={false} row space="between" style={styles.categories}>
+            {data.map(item => (
+              <TouchableOpacity
+                key={item.imageURL}
+                onPress={() => console.warn(item.imageURL)}
+              >
+                <Card center middle shadow style={styles.category}>
+                  <Badge margin={[0, 0, 15]} size={50} color="rgba(41,216,143,0.20)">
+                    <Image source={{uri: item.imageURL}} style={{width: 50, height: 50, borderRadius: 25}}/> 
+                  </Badge>
+                  <Text medium height={20}>{item.itemName}</Text>
+                  <Text gray caption>{item.location}</Text>
+                </Card>
+              </TouchableOpacity>
+            ))}
+          </Block>
+      </ScrollView>
     )
   }
 
@@ -133,17 +145,29 @@ export default class Explore extends Component {
 
   renderLoader = () => {
     return(
-      <Placeholder Animation={Fade} Left={PlaceholderMedia}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.explore}>
+      <Placeholder Animation={Fade} Left={PlaceholderMedia} style={styles.placeholder}>
         <PlaceholderLine width={80} />
         <PlaceholderLine />
         <PlaceholderLine width={30} />
       </Placeholder>
+      <Placeholder Animation={Fade} Right={PlaceholderMedia} style={styles.placeholder}>
+        <PlaceholderLine width={80} />
+        <PlaceholderLine />
+        <PlaceholderLine width={30} />
+      </Placeholder>
+      <Placeholder Animation={Fade} Left={PlaceholderMedia} style={styles.placeholder}>
+        <PlaceholderLine width={80} />
+        <PlaceholderLine />
+        <PlaceholderLine width={30} />
+      </Placeholder>
+      </ScrollView>
     )
   }
 
   render() {
 
-    const {category} = this.state;
+    const {category, searchDone} = this.state;
 
     return (
       <Block>
@@ -151,10 +175,7 @@ export default class Explore extends Component {
           <Text h1 bold>{category}</Text>
           {this.renderSearch()}
         </Block>
-
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.explore}>
-          {this.renderLoader()}
-        </ScrollView>
+        {searchDone? this.renderExplore() : this.renderLoader()}    
       </Block>
     )
   }
@@ -162,6 +183,8 @@ export default class Explore extends Component {
 
 Explore.defaultProps = {
   images: mocks.explore,
+  profile: mocks.profile,
+  categories: mocks.categories,
 };
 
 const styles = StyleSheet.create({
@@ -217,5 +240,19 @@ const styles = StyleSheet.create({
     height: height * 0.1,
     width,
     paddingBottom: theme.sizes.base * 4,
+  },
+  placeholder: {
+    marginBottom: 20
+  },
+  categories: {
+    flexWrap: 'wrap',
+    paddingHorizontal: theme.sizes.base * 2,
+    marginBottom: theme.sizes.base * 3.5,
+  },
+  category: {
+    // this should be dynamic based on screen width
+    minWidth: (width - (theme.sizes.padding * 2.4) - theme.sizes.base) / 2,
+    maxWidth: (width - (theme.sizes.padding * 2.4) - theme.sizes.base) / 2,
+    maxHeight: (width - (theme.sizes.padding * 2.4) - theme.sizes.base) / 2,
   }
 })

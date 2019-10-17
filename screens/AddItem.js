@@ -26,7 +26,6 @@ export default class AddItem extends Component {
             image: "",
             gotImage: false,
             userID: null,
-            category: "e",
             categorySelected: false,
             category: ""
           }
@@ -134,17 +133,17 @@ export default class AddItem extends Component {
     uploadData = async () => {
         const {itemName, location, price, itemCondition, image, category, userID} = this.state;
         imageURL = await this.uploadImage(image, userID);
-        const ref = firebase.database().ref('users/' + userID)
+        const ref = firebase.database().ref(category)
         const key = ref.push().key;
         ref.child(key).set({
             itemName,
             location,
             price, 
             itemCondition,
-            category,
-            imageURL
+            imageURL,
+            userID,
         })
-        ref.update({items: this.props.items + 1})
+        firebase.database().ref('users/' + userID).update({items: this.props.items + 1})
     }
 
     uploadImage = async (uri, userID) => {
