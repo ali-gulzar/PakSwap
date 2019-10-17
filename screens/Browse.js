@@ -4,11 +4,13 @@ import * as firebase from 'firebase';
 import { Card, Badge, Button, Block, Text } from '../components';
 import { theme, mocks } from '../constants';
 import { FloatingAction } from "react-native-floating-action";
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import AddItem from './AddItem';
 import RemoveItem from './RemoveItem';
+import Feedback from './Feedback';
 
 const avatar = require('../assets/images/avatar_1.jpg')
 
@@ -27,7 +29,14 @@ const actions = [
   //   name: "Delete",
   //   position: 2,
   //   color: "red"
-  // }
+  // },
+  {
+    text: "Report bugs",
+    icon: <MaterialIcons name="keyboard-voice" color={Colors.white} size={20}/>,
+    name: "Report",
+    position: 2,
+    color: "red"
+  }
 ];
 
 class Browse extends Component {
@@ -40,6 +49,7 @@ class Browse extends Component {
       profile: {},
       showAddItem: false,
       showDeleteItem: false,
+      showFeedback: false,
       userID: null,
       items: null
     }
@@ -71,7 +81,7 @@ class Browse extends Component {
   }
 
   closeModal = () => {
-    this.setState({showAddItem: false, showDeleteItem: false})
+    this.setState({showAddItem: false, showDeleteItem: false, showFeedback: false})
   }
 
   renderAddItem = () => {
@@ -89,10 +99,20 @@ class Browse extends Component {
       </Modal>
     )
   }
+
+  renderFeedback = () => {
+    return(
+        <Modal animationType="slide" visible={this.state.showFeedback} onRequestClose={() => this.setState({ showFeedback: false })}>
+          <Feedback close={this.closeModal} user={this.state.userID} />
+        </Modal>
+    )
+  }
   
   handlePress = (name) => {
     if (name === "Add") {
       this.setState({showAddItem: true})
+    } else if (name === "Report") {
+      this.setState({showFeedback: true})
     } else {
       this.setState({showDeleteItem: true})
     }
@@ -144,6 +164,7 @@ class Browse extends Component {
         />
         {this.renderAddItem()}
         {this.renderRemoveItem()}
+        {this.renderFeedback()}
       </Block>
     )
   }

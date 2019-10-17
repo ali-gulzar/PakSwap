@@ -7,6 +7,7 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as firebase from 'firebase';
 import Colors from '../constants/Colors';
+import Toast from 'react-native-root-toast';
 
 export default class AddItem extends Component {
 
@@ -89,6 +90,16 @@ export default class AddItem extends Component {
         await this.uploadData();
         await this.setState({loading: false});
         this.props.close();
+        Toast.show('Item added in the market.', {
+          duration: 1000,
+          position: 50,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+          backgroundColor: theme.colors.primary,
+          paddingTop: 20,
+      });
         }
     }
 
@@ -147,9 +158,7 @@ export default class AddItem extends Component {
           <Text h1 bold>Add item for exchange</Text>
           <KeyboardAvoidingView style={styles.signup} behavior="padding">
           <ScrollView keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} style={{ marginVertical: theme.sizes.padding }}>
-           
                 <Input
-                email
                 label="Item Name"
                 error={hasErrors('itemName')}
                 style={[styles.input, hasErrors('itemName')]}
