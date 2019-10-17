@@ -178,6 +178,7 @@ export default class AddItem extends Component {
                 style={[styles.input, hasErrors('itemName')]}
                 defaultValue={this.state.itemName}
                 onChangeText={text => this.setState({ itemName: text })}
+                autoCapitalize="sentences"
                 />
                 <Input
                 label="Location"
@@ -185,6 +186,7 @@ export default class AddItem extends Component {
                 style={[styles.input, hasErrors('location')]}
                 defaultValue={this.state.location}
                 onChangeText={text => this.setState({ location: text })}
+                autoCapitalize="sentences"
                 />
                 <Input
                 label="Price"

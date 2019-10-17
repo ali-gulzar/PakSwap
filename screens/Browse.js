@@ -47,7 +47,7 @@ class Browse extends Component {
       active: 'Products',
       categories: [],
       profile: {},
-      showAddItem: true,
+      showAddItem: false,
       showDeleteItem: false,
       showFeedback: false,
       userID: null,
@@ -146,7 +146,7 @@ class Browse extends Component {
               >
                 <Card center middle shadow style={styles.category}>
                   <Badge margin={[0, 0, 15]} size={50} color="rgba(41,216,143,0.20)">
-                    <Image source={category.image} />
+                    <MaterialCommunityIcons name="plus" color={Colors.accent} size={20}/>
                   </Badge>
                   <Text medium height={20}>{category.name}</Text>
                   <Text gray caption>{category.count} products</Text>

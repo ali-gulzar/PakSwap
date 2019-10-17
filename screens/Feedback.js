@@ -68,6 +68,7 @@ export default class AddItem extends Component {
                     style={[styles.input, hasErrors('feedback')]}
                     defaultValue={this.state.feedback}
                     onChangeText={text => this.setState({ feedback: text })}
+                    autoCapitalize="sentences"
                 />
             <Block middle padding={[theme.sizes.base / 2, 0]}>
                 <Button gradient onPress={() => this.handlePress()}>
