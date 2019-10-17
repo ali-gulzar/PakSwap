@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { Card, Badge, Button, Input, Block, Text } from '../components';
 import { theme, mocks } from '../constants';
-import Toast from 'react-native-root-toast';
+import LottieView from "lottie-react-native";
 
 import * as firebase from 'firebase';
 
@@ -90,18 +90,15 @@ export default class Explore extends Component {
     const { navigation } = this.props;
     const {data, category} = this.state;
 
-    if(!data) {
-      // Toast.show(`No ${category} in the market yet.`, {
-      //   duration: 1000,
-      //   position: Toast.positions.CENTER,
-      //   shadow: true,
-      //   animation: true,
-      //   hideOnPress: true,
-      //   delay: 0,
-      //   backgroundColor: theme.colors.primary,
-      //   paddingTop: 20,
-      // })
-      return;
+    if(!data.length) {
+      return(
+        <LottieView
+          autoPlay
+          loop
+          source={require('../assets/animations/empty.json')}
+          style={{flex:4}}
+        />
+      )
     }
 
     return (
