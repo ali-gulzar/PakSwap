@@ -6101,6 +6101,13 @@ react-native-safe-area-view@^0.14.1:
   dependencies:
     debounce "^1.2.0"
 
+react-native-simple-picker@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-simple-picker/-/react-native-simple-picker-3.1.1.tgz#b55611df0e219e21f9c6ec63c1fcd410fc5d7139"
+  integrity sha512-w9C/G0q1vs2QO0E1rxVQavYTCE3q8tweHcLHdS/ipBWrbixMqFaXy6ZJDuD4SnUrDF8T7FMStOll5OWVmotGZg==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-swipe-list-view@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-native-swipe-list-view/-/react-native-swipe-list-view-2.0.3.tgz#ab93a56d9f1126a486fa77d99de61ab4d44ba735"

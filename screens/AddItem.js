@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, ScrollView, Image, View} from 'react-native';
+import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, ScrollView, Image, View, Picker} from 'react-native';
 import { Button, Block, Input, Text } from '../components';
 import { theme } from '../constants';
 import Constants from 'expo-constants';
@@ -8,6 +8,9 @@ import * as ImagePicker from 'expo-image-picker';
 import * as firebase from 'firebase';
 import Colors from '../constants/Colors';
 import Toast from 'react-native-root-toast';
+import SimplePicker from 'react-native-simple-picker';
+
+const options = ['Electronics', 'Games', 'Books', 'Clothes','Free', 'Other']
 
 export default class AddItem extends Component {
 
@@ -22,9 +25,12 @@ export default class AddItem extends Component {
             loading: false,
             image: "",
             gotImage: false,
-            userID: null
+            userID: null,
+            category: "e",
+            categorySelected: false,
+            category: ""
           }
-
+        this.picker = React.createRef()
         this.closeModal = this.closeModal.bind(this);
     }
 
@@ -61,7 +67,7 @@ export default class AddItem extends Component {
     }
 
     handleAddItem = async () => {
-        const { itemName, location, price, itemCondition, image } = this.state;
+        const { itemName, location, price, itemCondition, image, categorySelected } = this.state;
         const errors = [];
 
         Keyboard.dismiss();
@@ -71,16 +77,17 @@ export default class AddItem extends Component {
         if (!location) errors.push('location');
         if (!price) errors.push('price');
         if (!itemCondition) errors.push('itemCondition');
-        if (!image) {
-            errors.push('image')
-            Alert.alert(
-                'Error',
-                'Please fill in the form and upload one image for the item to be exchanged.',
-                [
-                  { text: 'Okay', }
-                ],
-                { cancelable: false }
-              )
+        if (!(categorySelected || image)) {
+          errors.push('categorySelected');
+          errors.push('image');
+          Alert.alert(
+            'Error',
+            'Please fill in the form and select a category and image for the item to be exchanged.',
+            [
+              { text: 'Okay', }
+            ],
+            { cancelable: false }
+          )
         };
 
         this.setState({ errors, loading: false });
@@ -125,7 +132,7 @@ export default class AddItem extends Component {
     }
 
     uploadData = async () => {
-        const {itemName, location, price, itemCondition, image, userID} = this.state;
+        const {itemName, location, price, itemCondition, image, category, userID} = this.state;
         imageURL = await this.uploadImage(image, userID);
         const ref = firebase.database().ref('users/' + userID)
         const key = ref.push().key;
@@ -134,6 +141,7 @@ export default class AddItem extends Component {
             location,
             price, 
             itemCondition,
+            category,
             imageURL
         })
         ref.update({items: this.props.items + 1})
@@ -149,8 +157,14 @@ export default class AddItem extends Component {
         return await snapshot.ref.getDownloadURL();
     }
 
+    showPicker = () => {
+      if (this.picker.current) {
+        this.picker.current.show()
+      }
+    }
+
     render() {
-        const { loading, errors, image, gotImage } = this.state;
+        const { loading, errors, image, gotImage, categorySelected, category } = this.state;
         const hasErrors = key => errors.includes(key) ? styles.hasErrors : null;
 
     return (
@@ -190,6 +204,9 @@ export default class AddItem extends Component {
                 />
             {gotImage && this.renderImage(image)}
             <Block middle padding={[theme.sizes.base / 2, 0]}>
+                <Button color={Colors.tintColor} small onPress={() => this.showPicker()}>
+                  <Text bold white center>{categorySelected ? category: "Select Category"}</Text>
+                </Button>
                 <Button color="#1253bc" small onPress={() => this._pickImage()}>
                     {loading ?
                         <ActivityIndicator size="small" color="white" /> : 
@@ -211,6 +228,18 @@ export default class AddItem extends Component {
             </Block>
           </ScrollView>
           </KeyboardAvoidingView>
+          <SimplePicker
+            confirmTextStyle={{fontWeight: "bold"}}
+            cancelTextStyle={{fontWeight: "bold"}}
+            ref={this.picker}
+            options={options}
+            onSubmit={(option) => {
+              this.setState({
+                category: option,
+                categorySelected: true
+              });
+            }}
+          />
         </Block>
     )
   }

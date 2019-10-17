@@ -47,7 +47,7 @@ class Browse extends Component {
       active: 'Products',
       categories: [],
       profile: {},
-      showAddItem: false,
+      showAddItem: true,
       showDeleteItem: false,
       showFeedback: false,
       userID: null,
