@@ -4,11 +4,8 @@ import * as Font from 'expo-font';
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
 import AppNavigator from './navigation';
-
 import IntroScreen from './screens/IntroScreen';
-
 import * as firebase from 'firebase';
 
 // console.disableYellowBox = true;
@@ -45,16 +42,16 @@ export default class App extends React.Component {
   async loadResourcesAsync() {
     await Promise.all([
       Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
+        require('./assets/images/avatar_1.jpg'),
+        require('./assets/images/trash.png'),
       ]),
       Font.loadAsync({
         ...Ionicons.font,
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       })
-    ]).then((values) => {
-      this._retrieveAsyncStorageData();
-      this.intializeFirebase();
+    ]).then(async(values) => {
+      await this._retrieveAsyncStorageData();
+      await this.intializeFirebase();
     });
   }
   

@@ -9,11 +9,8 @@ import Colors from '../../constants/Colors';
 class Welcome extends Component {
 
   static navigationOptions = {
-    headerStyle: {
-    backgroundColor: theme.colors.white, // or 'white
-    borderBottomColor: "transparent",
-    elevation: 0, // for android
-    }
+    header: null,
+    headerBackImage: <Image source={require('../../assets/icons/back.png')} />
 };
 
   scrollX = new Animated.Value(0);
@@ -48,7 +45,7 @@ class Welcome extends Component {
               6. We may, but have no obligation to, remove Content and Accounts containing Content that we determine in our sole discretion are unlawful, offensive, threatening, libelous, defamatory, pornographic, obscene or otherwise objectionable or violates any party's intellectual property or these Terms of Service.
             </Text>
             <Text caption gray height={24} style={{ marginBottom: theme.sizes.base }}>
-              7. Verbal, physical, written or other abuse (including threats of abuse or retribution) of any Expo customer, employee, member, or officer will result in immediate account termination.
+              7. Verbal, physical, written or other abuse (including threats of abuse or retribution) of any PakSwap customer, employee, member, or officer will result in immediate account termination.
             </Text>
             <Text caption gray height={24} style={{ marginBottom: theme.sizes.base }}>
               8. You understand that the technical processing and transmission of the Service, including your Content, may be transferred unencrypted and involve (a) transmissions over various networks; and (b) changes to conform and adapt to technical requirements of connecting networks or devices.
@@ -85,7 +82,7 @@ class Welcome extends Component {
       <Block>
         <Block center bottom flex={0.4}>
             <Text h1 center bold primary>
-              PAKISTAN
+              PAK
               <Text h1 > Swap</Text>
             </Text>
             <Text h3 gray2 style={{ marginTop: theme.sizes.padding / 2 }}>
@@ -97,10 +94,7 @@ class Welcome extends Component {
         </Block>
         <Block middle flex={0.5} margin={[0, theme.sizes.padding * 2]}>
           <Button gradient onPress={() => navigation.navigate('Login')}>
-            <Text center semibold white>Login</Text>
-          </Button>
-          <Button shadow onPress={() => navigation.navigate('SignUp')}>
-            <Text center semibold>Signup</Text>
+            <Text center semibold white>Login | SignUp</Text>
           </Button>
           <Button onPress={() => this.setState({ showTerms: true })}>
             <Text center caption gray style={{paddingBottom: 50}}>Terms of service</Text>

@@ -115,7 +115,7 @@ class Browse extends Component {
     const {navigation} = this.props;
     if (name === "Add" && loggedIn ) {
       this.setState({showAddItem: true})
-    } else if (name === "Report" && loggedIn) {
+    } else if (name === "Report") {
       this.setState({showFeedback: true})
     } else {
       navigation.navigate("LoginNavigation");
