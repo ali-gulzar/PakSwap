@@ -1,6 +1,7 @@
 import React from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Colors from './Colors';
 
 const categories = [
@@ -37,12 +38,12 @@ const categories = [
     image: <Entypo name="mobile" color={Colors.gray} size={25}/>
   },
   {
-    id: 'free',
-    name: 'Free',
+    id: 'accessories',
+    name: 'Accessories',
     tags: ['products', 'shop'],
     count: 47,
-    description:"Out of use",
-    image: <Entypo name="log-out" color={Colors.accent} size={25}/>
+    description:"Everyday items",
+    image: <AntDesign name="database" color={Colors.accent} size={25}/>
   },
   {
     id: 'other',
