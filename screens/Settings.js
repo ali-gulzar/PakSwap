@@ -58,16 +58,19 @@ class Settings extends Component {
       firebase.database().ref('users/'+ user.uid).remove();
       firebase.auth().signOut();
       this.setState({loading: false})
+      navigation.navigate("Browse")
     }, function(error) {
       // An error happened.
     });
   }
 
   handleLogOut = () => {
+    const {navigation} = this.props;
     this.setState({loading: true})
     firebase.auth().signOut().then(() => {
       this.setState({loading: false})
     });
+    navigation.navigate("Browse")
   }
 
   render() {

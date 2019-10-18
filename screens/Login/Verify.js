@@ -3,7 +3,7 @@ import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, I
 
 import { Button, Block, Input, Text } from '../../components';
 import { theme } from '../../constants';
-
+import Toast from 'react-native-root-toast';
 import * as firebase from 'firebase';
 
 var generate = require('project-name-generator');
@@ -13,23 +13,8 @@ const VALID_CODE = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7
 export default class Verify extends Component {
 
   static navigationOptions = {
-    headerStyle: {
-    height: 16 * 4,
-    backgroundColor: theme.colors.white, // or 'white
-    borderBottomColor: "transparent",
-    elevation: 0, // for android
-    },
-    headerBackImage: <Image source={require('../../assets/icons/back.png')} />,
-    headerBackTitle: null,
-    headerLeftContainerStyle: {
-    alignItems: 'center',
-    marginLeft: 16 * 2,
-    paddingRight: 16,
-    },
-    headerRightContainerStyle: {
-    alignItems: 'center',
-    paddingRight: 16,
-    },
+    header: null,
+    headerBackImage: <Image source={require('../../assets/icons/back.png')} />
   };
 
   constructor(props) {
@@ -71,10 +56,20 @@ export default class Verify extends Component {
     const {navigation} = this.props;
     const confirmation = navigation.getParam('confirmation', '');
     confirmation.confirm(code)
-    .then((result) => {
+    .then(async(result) => {
+      await this.makeUserData();
       this.setState({loading: false})
-      this.makeUserData();
-      navigation.navigate('AppNavigator')
+      navigation.navigate('Browse')
+      Toast.show('Logged in successfully', {
+        duration: 1000,
+        position: 50,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+        backgroundColor: theme.colors.primary,
+        paddingTop: 20,
+    });
     })
     .catch((err) => {
       this.setState({loading: false})
@@ -107,6 +102,19 @@ export default class Verify extends Component {
     }
   }
 
+  sendMessage = () => {
+    Toast.show('Will be released in the next version. You can try from the start again. Sorry for the inconvenience.', {
+      duration: 1000,
+      position: 50,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+      backgroundColor: theme.colors.primary,
+      paddingTop: 20,
+  });
+  }
+
   render() {
     const { navigation } = this.props;
     const { loading, errors } = this.state;
@@ -114,7 +122,7 @@ export default class Verify extends Component {
 
     return (
       <KeyboardAvoidingView style={styles.forgot} behavior="padding">
-        <Block padding={[0, theme.sizes.base * 2]}>
+        <Block style={{marginTop: 20}} padding={[0, theme.sizes.base * 2]}>
           <Text h1 bold>Verify Phone Number</Text>
           <Block middle>
             <Input
@@ -131,7 +139,7 @@ export default class Verify extends Component {
                 <Text bold white center>Login</Text>
               }
             </Button>
-            <Button onPress={() => navigation.navigate('Forgot')}>
+            <Button onPress={() => this.sendMessage()}>
               <Text gray caption center style={{ textDecorationLine: 'underline' }}>
                 Resend verification code
               </Text>

@@ -14,23 +14,8 @@ const captchaUrl = `https://ali-gulzar.github.io/HostRecaptcha/`
 export default class LoginScreen extends Component {
 
   static navigationOptions = {
-    headerStyle: {
-    height: 16 * 4,
-    backgroundColor: theme.colors.white, // or 'white
-    borderBottomColor: "transparent",
-    elevation: 0, // for android
-    },
-    headerBackImage: <Image source={require('../../assets/icons/back.png')} />,
-    headerBackTitle: null,
-    headerLeftContainerStyle: {
-    alignItems: 'center',
-    marginLeft: 16 * 2,
-    paddingRight: 16,
-    },
-    headerRightContainerStyle: {
-    alignItems: 'center',
-    paddingRight: 16,
-    },
+    header: null,
+    headerBackImage: <Image source={require('../../assets/icons/back.png')} />
   };
 
   constructor(props) {
@@ -134,7 +119,7 @@ export default class LoginScreen extends Component {
 
     return (
       <KeyboardAvoidingView style={styles.login} behavior="padding">
-        <Block padding={[0, theme.sizes.base * 2]}>
+        <Block style={{marginTop: 20}} padding={[0, theme.sizes.base * 2]}>
           <Text h1 bold>Login</Text>
           <Block middle>
             <PhoneInput ref='phone' initialCountry="pk" value="+92" disabled={true}/>

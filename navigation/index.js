@@ -8,6 +8,7 @@ import Browse from '../screens/Browse';
 import Settings from '../screens/Settings';
 import Explore from '../screens/Explore';
 import Product from '../screens/Product';
+import LoginNavigation from '../screens/Login';
 
 const screens = createStackNavigator({
   Browse,
@@ -42,6 +43,17 @@ const screens = createStackNavigator({
         paddingRight: theme.sizes.base,
         marginTop: theme.sizes.base * 2,
       }
+    }
+  },
+  LoginNavigation: {
+    screen: LoginNavigation,
+    navigationOptions: {
+      headerLeftContainerStyle: {
+        alignItems: 'center',
+        marginLeft: theme.sizes.base * 2,
+        paddingRight: theme.sizes.base,
+        marginTop: theme.sizes.base * 2,
+      },
     }
   },
 }, {

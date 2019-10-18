@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dimensions, Image, StyleSheet, ScrollView, TouchableOpacity, Modal} from 'react-native'
+import { Dimensions, Image, StyleSheet, ScrollView, TouchableOpacity, Modal, ActivityIndicator} from 'react-native'
 import * as firebase from 'firebase';
 import { Card, Badge, Button, Block, Text } from '../components';
 import { theme, mocks } from '../constants';
@@ -52,6 +52,8 @@ class Browse extends Component {
       showFeedback: false,
       userID: null,
       items: null,
+      loggedIn: false,
+      profileLoaded: false
     }
 
     this.getUserData = this.getUserData.bind(this);
@@ -72,10 +74,10 @@ class Browse extends Component {
         firebase.database().ref('users/' + user.uid).on("value", snapshot => {
           const profileData = snapshot.val()
           profileData["id"] = user.uid
-          this.setState({profile: profileData, userID: user.uid, items: profileData['items']})
+          this.setState({profile: profileData, userID: user.uid, loggedIn: true, profileLoaded: true})
         })
       } else {
-        return;
+        this.setState({loggedIn: false, profileLoaded: true})
       }
     });
   }
@@ -109,33 +111,40 @@ class Browse extends Component {
   }
   
   handlePress = (name) => {
-    if (name === "Add") {
+    const {loggedIn} = this.state;
+    const {navigation} = this.props;
+    if (name === "Add" && loggedIn ) {
       this.setState({showAddItem: true})
-    } else if (name === "Report") {
+    } else if (name === "Report" && loggedIn) {
       this.setState({showFeedback: true})
     } else {
-      this.setState({showDeleteItem: true})
+      navigation.navigate("LoginNavigation");
     }
   }
 
-  handleCategory = (category) => {
+  logicSettings = () => {
+    const {loggedIn, profile} = this.state;
     const {navigation} = this.props;
-
+    if (loggedIn) {
+      navigation.navigate("Settings", {profile});
+    } else {
+      navigation.navigate("LoginNavigation");
+    }
   }
 
   render() {
     const { navigation } = this.props;
-    const { categories } = this.state;
+    const { categories, profileLoaded } = this.state;
 
     return (
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
           <Text h1 bold>Browse</Text>
-          <Button onPress={() => navigation.navigate('Settings', {profile: this.state.profile})}>
-            <Image
+          <Button onPress={() => this.logicSettings()}>
+            {profileLoaded ? <Image
               source={avatar}
               style={styles.avatar}
-            />
+            /> : <ActivityIndicator/>}
           </Button>
         </Block>
 

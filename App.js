@@ -8,7 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 import AppNavigator from './navigation';
 
 import IntroScreen from './screens/IntroScreen';
-import Navigation from './screens/Login';
 
 import * as firebase from 'firebase';
 
@@ -33,7 +32,6 @@ export default class App extends React.Component {
     this.state = {
       isLoadingComplete: false,
       introDone: false,
-      loggedIn: true,
     }
 
     this.loadResourcesAsync = this.loadResourcesAsync.bind(this);
@@ -42,7 +40,6 @@ export default class App extends React.Component {
     this.handleFinishLoading = this.handleFinishLoading.bind(this);
     this.saveAndChangeintroDone = this.saveAndChangeintroDone.bind(this);
     this.intializeFirebase = this.intializeFirebase.bind(this);
-    this.logOut = this.logOut.bind(this);
   }
 
   async loadResourcesAsync() {
@@ -80,17 +77,10 @@ export default class App extends React.Component {
     } else {
       firebase.app();
     }
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({loggedIn: true})
-      } else {
-        this.setState({loggedIn: false})
-      }
-   });
   };
   
   handleLoadingError(error) {
-    console.warn(error);
+    return;
   }
   
   handleFinishLoading() {
@@ -106,12 +96,8 @@ export default class App extends React.Component {
     this.setState({introDone: true})
   }
 
-  logOut = () => {
-    this.setState({loggedIn: false})
-  }
-
   render() {
-    const {introDone, loggedIn} = this.state;
+    const {introDone} = this.state;
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -124,7 +110,7 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
-          {introDone ? (loggedIn ? <AppNavigator logout={this.logOut}/> : <Navigation/>) : <IntroScreen onDone={this.saveAndChangeintroDone}/>}
+          {introDone ?  <AppNavigator/> : <IntroScreen onDone={this.saveAndChangeintroDone}/>}
         </View>
       );
     }
