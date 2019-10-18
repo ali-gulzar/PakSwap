@@ -49,6 +49,7 @@ export default class AddItem extends Component {
                 delay: 0,
                 backgroundColor: theme.colors.primary,
                 paddingTop: 20,
+                opacity: 0.95
             });
         }
     }

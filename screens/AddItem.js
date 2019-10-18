@@ -80,7 +80,7 @@ export default class AddItem extends Component {
         if (!description) errors.push('description');
         if (!(categorySelected && image)) {
           errors.push('categorySelected');
-          errors.push('image');
+          errors.push('image'); 
           Alert.alert(
             'Error',
             'Please fill in the form and select a category and image for the item to be exchanged.',
@@ -107,6 +107,7 @@ export default class AddItem extends Component {
           delay: 0,
           backgroundColor: theme.colors.primary,
           paddingTop: 20,
+          opacity: 0.95
       });
         }
     }
@@ -119,7 +120,7 @@ export default class AddItem extends Component {
         aspect: [4, 3],
         });
         if (!result.cancelled) {
-        this.setState({ image: result.uri, gotImage: true });
+        this.setState({ image: result.uri, gotImage: true, loading: false });
         }
         this.setState({loading: false})
     };
@@ -174,6 +175,7 @@ export default class AddItem extends Component {
           <Text h1 bold>Add item for exchange</Text>
           <KeyboardAvoidingView style={styles.signup} behavior="padding">
           <ScrollView keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} style={{ marginVertical: theme.sizes.padding }}>
+                {gotImage && this.renderImage(image)}
                 <Input
                 label="Item Name"
                 error={hasErrors('itemName')}
@@ -218,7 +220,6 @@ export default class AddItem extends Component {
                 keyboardType="number-pad"
                 maxLength={2}
                 />
-            {gotImage && this.renderImage(image)}
             <Block middle padding={[theme.sizes.base / 2, 0]}>
                 <Button color={Colors.tintColor} small onPress={() => this.showPicker()}>
                   <Text bold white center>{categorySelected ? category: "Select Category"}</Text>

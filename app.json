@@ -24,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aligulzar.pakswap"
     },
     "android": {
       "package": "com.aligulzar.pakswap"
