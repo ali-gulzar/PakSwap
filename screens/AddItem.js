@@ -27,7 +27,8 @@ export default class AddItem extends Component {
             gotImage: false,
             userID: null,
             categorySelected: false,
-            category: ""
+            category: "",
+            description: ""
           }
         this.picker = React.createRef()
         this.closeModal = this.closeModal.bind(this);
@@ -66,7 +67,7 @@ export default class AddItem extends Component {
     }
 
     handleAddItem = async () => {
-        const { itemName, location, price, itemCondition, image, categorySelected } = this.state;
+        const { itemName, location, price, itemCondition, image, categorySelected, description } = this.state;
         const errors = [];
 
         Keyboard.dismiss();
@@ -76,7 +77,8 @@ export default class AddItem extends Component {
         if (!location) errors.push('location');
         if (!price) errors.push('price');
         if (!itemCondition) errors.push('itemCondition');
-        if (!(categorySelected || image)) {
+        if (!description) errors.push('description');
+        if (!(categorySelected && image)) {
           errors.push('categorySelected');
           errors.push('image');
           Alert.alert(
@@ -131,7 +133,7 @@ export default class AddItem extends Component {
     }
 
     uploadData = async () => {
-        const {itemName, location, price, itemCondition, image, category, userID} = this.state;
+        const {itemName, location, price, itemCondition, image, category, userID, description} = this.state;
         imageURL = await this.uploadImage(image, userID);
         const ref = firebase.database().ref(category)
         const key = ref.push().key;
@@ -142,6 +144,7 @@ export default class AddItem extends Component {
             itemCondition,
             imageURL,
             userID,
+            description
         })
         firebase.database().ref('users/' + userID).update({items: this.props.items + 1})
     }
@@ -178,6 +181,7 @@ export default class AddItem extends Component {
                 defaultValue={this.state.itemName}
                 onChangeText={text => this.setState({ itemName: text })}
                 autoCapitalize="sentences"
+                maxLength={15}
                 />
                 <Input
                 label="Location"
@@ -185,6 +189,15 @@ export default class AddItem extends Component {
                 style={[styles.input, hasErrors('location')]}
                 defaultValue={this.state.location}
                 onChangeText={text => this.setState({ location: text })}
+                autoCapitalize="sentences"
+                maxLength={15}
+                />
+                <Input
+                label="Description"
+                error={hasErrors('description')}
+                style={[styles.input, hasErrors('description')]}
+                defaultValue={this.state.description}
+                onChangeText={text => this.setState({ description: text })}
                 autoCapitalize="sentences"
                 />
                 <Input
@@ -194,6 +207,7 @@ export default class AddItem extends Component {
                 defaultValue={this.state.price}
                 onChangeText={text => this.setState({ price: text })}
                 keyboardType="number-pad"
+                maxLength={5}
                 />
                 <Input
                 label="Item condition"
@@ -202,6 +216,7 @@ export default class AddItem extends Component {
                 defaultValue={this.state.itemCondition}
                 onChangeText={text => this.setState({ itemCondition: text })}
                 keyboardType="number-pad"
+                maxLength={2}
                 />
             {gotImage && this.renderImage(image)}
             <Block middle padding={[theme.sizes.base / 2, 0]}>

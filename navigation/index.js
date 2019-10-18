@@ -6,7 +6,8 @@ import { theme } from '../constants';
 
 import Browse from '../screens/Browse';
 import Settings from '../screens/Settings';
-import Explore from '../screens/Explore.js';
+import Explore from '../screens/Explore';
+import Product from '../screens/Product';
 
 const screens = createStackNavigator({
   Browse,
@@ -23,6 +24,17 @@ const screens = createStackNavigator({
   },
   Explore: {
     screen: Explore,
+    navigationOptions: {
+      headerLeftContainerStyle: {
+        alignItems: 'center',
+        marginLeft: theme.sizes.base * 2,
+        paddingRight: theme.sizes.base,
+        marginTop: theme.sizes.base * 2,
+      }
+    }
+  },
+  Product: {
+    screen: Product,
     navigationOptions: {
       headerLeftContainerStyle: {
         alignItems: 'center',

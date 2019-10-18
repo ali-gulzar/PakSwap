@@ -107,10 +107,10 @@ export default class Explore extends Component {
           style={{ paddingVertical: theme.sizes.base * 2}}
         >
           <Block flex={false} row space="between" style={styles.categories}>
-            {data.map(item => (
+            {data.map((item, index) => (
               <TouchableOpacity
-                key={item.imageURL}
-                onPress={() => console.warn(item.imageURL)}
+                key={index}
+                onPress={() => navigation.navigate("Product", {product: data[index]})}
               >
                 <Card center middle shadow style={styles.category}>
                   <Badge margin={[0, 0, 15]} size={50} color="rgba(41,216,143,0.20)">
