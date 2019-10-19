@@ -74,7 +74,7 @@ class Browse extends Component {
         firebase.database().ref('users/' + user.uid).on("value", snapshot => {
           const profileData = snapshot.val()
           profileData["id"] = user.uid
-          this.setState({profile: profileData, userID: user.uid, loggedIn: true, profileLoaded: true})
+          this.setState({profile: profileData, userID: user.uid, loggedIn: true, profileLoaded: true, items: profileData['items']})
         })
       } else {
         this.setState({loggedIn: false, profileLoaded: true})

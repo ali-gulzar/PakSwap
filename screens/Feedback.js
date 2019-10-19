@@ -62,7 +62,7 @@ export default class AddItem extends Component {
         <Block padding={[theme.sizes.padding * 2, theme.sizes.padding, 0, theme.sizes.padding ]} space="between">
           <Text h1 bold>Feedback to improve your experience</Text>
           <KeyboardAvoidingView style={styles.signup} behavior="padding">
-          <ScrollView keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} style={{ marginVertical: theme.sizes.padding }}>
+          <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} style={{ marginVertical: theme.sizes.padding }}>
                 <Input
                     label="Feedback"
                     error={hasErrors('feedback')}

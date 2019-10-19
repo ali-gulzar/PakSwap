@@ -49,7 +49,7 @@ const slides = [
   },
   {
     key: 'third',
-    title: 'Exchange and enjoy',
+    title: 'Make PakSaaf with PakSwap',
     text: 'Exchange your old items with your barter friends',
     icon: 'shopping-cart',
     colors: [Color.primary, Color.secondary],

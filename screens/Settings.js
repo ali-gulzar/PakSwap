@@ -107,7 +107,7 @@ class Settings extends Component {
             </Block>
             <Block row space="between" margin={[10, 0]} style={styles.inputRow}>
               <Block>
-                <Text gray2 style={{ marginBottom: 10 }}>Items on the market</Text>
+                <Text gray2 style={{ marginBottom: 10 }}>Your items on the market for exchange</Text>
                 <Text bold>{profile.items}</Text>
               </Block>
             </Block>

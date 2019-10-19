@@ -1,7 +1,8 @@
 import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import Colors from './Colors';
 
 const categories = [
@@ -11,7 +12,7 @@ const categories = [
     tags: ['products', 'inspirations'],
     count: 147,
     description:"Accessories",
-    image: <MaterialCommunityIcons name="washing-machine" color={Colors.primary} size={25}/>
+    image: <Foundation name="laptop" color={Colors.primary} size={25}/>
   },
   {
     id: 'games',
@@ -30,12 +31,12 @@ const categories = [
     image: <Entypo name="book" color="#1253bc" size={25}/>
   },
   {
-    id: 'mobilePhones',
-    name: 'Mobile Phones',
+    id: 'services',
+    name: 'Services',
     tags: ['products', 'shop'],
     count: 17,
     description:"Apple - Other",
-    image: <Entypo name="mobile" color={Colors.gray} size={25}/>
+    image: <FontAwesome name="paint-brush" color={Colors.gray} size={25}/>
   },
   {
     id: 'accessories',

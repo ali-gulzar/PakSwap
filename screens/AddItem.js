@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, ScrollView, Image, View, Picker} from 'react-native';
+import { Alert, ActivityIndicator, Keyboard, KeyboardAvoidingView, StyleSheet, ScrollView, Image, View, TouchableOpacity} from 'react-native';
 import { Button, Block, Input, Text } from '../components';
 import { theme } from '../constants';
 import Constants from 'expo-constants';
@@ -9,8 +9,9 @@ import * as firebase from 'firebase';
 import Colors from '../constants/Colors';
 import Toast from 'react-native-root-toast';
 import SimplePicker from 'react-native-simple-picker';
+import { Entypo } from '@expo/vector-icons';
 
-const options = ['Electronics', 'Games', 'Books', 'Mobile Phones','Accessories', 'Other']
+const options = ['Electronics', 'Games', 'Books', 'Services','Accessories', 'Other']
 
 export default class AddItem extends Component {
 
@@ -127,10 +128,18 @@ export default class AddItem extends Component {
 
     renderImage = (image) => {
         return(
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center'}} onPress={() => this._pickImage()}>
                 <Image source={{ uri: image }} style={{ width: 100, height: 100, borderRadius: 20}} />
-            </View>
+            </TouchableOpacity>
         )
+    }
+
+    renderCameraIcon = () => {
+      return(
+        <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center'}} onPress={() => this._pickImage()}>
+            <Entypo name="camera" color={Colors.black} size={40}/>
+        </TouchableOpacity>
+     )
     }
 
     uploadData = async () => {
@@ -174,8 +183,8 @@ export default class AddItem extends Component {
         <Block padding={[theme.sizes.padding * 2, theme.sizes.padding, 0, theme.sizes.padding ]} space="between">
           <Text h1 bold>Add item for exchange</Text>
           <KeyboardAvoidingView style={styles.signup} behavior="padding">
-          <ScrollView keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} style={{ marginVertical: theme.sizes.padding }}>
-                {gotImage && this.renderImage(image)}
+          <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} style={{ marginVertical: theme.sizes.padding }}>
+                {gotImage ? this.renderImage(image): this.renderCameraIcon()}
                 <Input
                 label="Item Name"
                 error={hasErrors('itemName')}
@@ -223,12 +232,6 @@ export default class AddItem extends Component {
             <Block middle padding={[theme.sizes.base / 2, 0]}>
                 <Button color={Colors.tintColor} small onPress={() => this.showPicker()}>
                   <Text bold white center>{categorySelected ? category: "Select Category"}</Text>
-                </Button>
-                <Button color="#1253bc" small onPress={() => this._pickImage()}>
-                    {loading ?
-                        <ActivityIndicator size="small" color="white" /> : 
-                        <Text bold white center>Upload a picture</Text>
-                    }
                 </Button>
                 <Button gradient onPress={() => this.handleAddItem()}>
                     {loading ?
