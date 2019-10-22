@@ -35,7 +35,7 @@ const categories = [
     name: 'Services',
     tags: ['products', 'shop'],
     count: 17,
-    description:"Teaching - Cleaning",
+    description:"Teaching and other",
     image: <FontAwesome name="paint-brush" color={Colors.gray} size={25}/>
   },
   {
