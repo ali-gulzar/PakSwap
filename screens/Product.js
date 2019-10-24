@@ -67,26 +67,24 @@ class Product extends Component {
     )
   }
 
-  contactSeller = (user) => {
+  contactSeller = (number) => {
     this.setState({loading: true})
-    firebase.database().ref('users/' + user).child('phoneNumber').on('value', snapshot => {
-      const contacting = `sms:${snapshot.val()}`
-      Linking.canOpenURL(contacting).then(supported => {
-        if(supported){
-            Linking.openURL(contacting);
-        } else {
-          Toast.show(`Can not contact seller on number ${snapshot.val()}`, {
-            duration: 1000,
-            position: 50,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-            backgroundColor: theme.colors.primary,
-            paddingTop: 20,
-          });
-        }
-      })
+    const contacting = `sms:${number}`
+    Linking.canOpenURL(contacting).then(supported => {
+      if(supported){
+          Linking.openURL(contacting);
+      } else {
+        Toast.show(`Can not contact seller on number ${number}`, {
+          duration: 1000,
+          position: 50,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+          backgroundColor: theme.colors.primary,
+          paddingTop: 20,
+        });
+      }
     })
   }
 
@@ -120,7 +118,7 @@ class Product extends Component {
         </Block>
 
         <Block center space="between">
-          {this.renderFooter(product.userID)}
+          {this.renderFooter(product.phoneNumber)}
         </Block>
         
       </ScrollView>

@@ -29,10 +29,10 @@ export default class AddItem extends Component {
             userID: null,
             categorySelected: false,
             category: "",
-            description: ""
+            description: "",
+            phoneNumber: null
           }
         this.picker = React.createRef()
-        this.closeModal = this.closeModal.bind(this);
     }
 
     componentDidMount() {
@@ -46,7 +46,9 @@ export default class AddItem extends Component {
     getUserData = () => {
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
-              this.setState({userID: user.uid})
+              firebase.database().ref('users/' + user.uid).child('phoneNumber').on('value', snapshot => {
+                this.setState({userID: user.uid, phoneNumber: snapshot.val()})
+              })
           } else {
             return;
           }
@@ -61,10 +63,6 @@ export default class AddItem extends Component {
             this.props.close();
         }
         }
-    }
-
-    closeModal = () => {
-        console.warn("not working")
     }
 
     handleAddItem = async () => {
@@ -143,7 +141,7 @@ export default class AddItem extends Component {
     }
 
     uploadData = async () => {
-        const {itemName, location, price, itemCondition, image, category, userID, description} = this.state;
+        const {itemName, location, price, itemCondition, image, category, userID, description, phoneNumber} = this.state;
         imageURL = await this.uploadImage(image, userID);
         const ref = firebase.database().ref(category)
         const key = ref.push().key;
@@ -154,7 +152,8 @@ export default class AddItem extends Component {
             itemCondition,
             imageURL,
             userID,
-            description
+            description,
+            phoneNumber
         })
         firebase.database().ref('users/' + userID).update({items: this.props.items + 1})
     }
