@@ -9,8 +9,6 @@ import PhoneInput from 'react-native-phone-input'
 
 const VALID_PHONENUMBER = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
 
-const captchaUrl = `https://ali-gulzar.github.io/HostRecaptcha/`
-
 export default class LoginScreen extends Component {
 
   static navigationOptions = {
@@ -103,7 +101,7 @@ export default class LoginScreen extends Component {
     return (
       <Modal animationType="slide" visible={this.state.showModal} onRequestClose={() => this.setState({ showModal: false })}>
           <WebView
-            source={{ uri: captchaUrl }}
+            source={{ uri: 'https://pakswap.netlify.com/' }}
             onNavigationStateChange={data =>
               this._handleResponse(data)
             }

@@ -8,8 +8,6 @@ import * as firebase from 'firebase';
 
 var generate = require('project-name-generator');
 
-const VALID_CODE = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/
-
 export default class Verify extends Component {
 
   static navigationOptions = {

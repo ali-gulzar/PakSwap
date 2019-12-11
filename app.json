@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/pakswapIcon.png",
     "splash": {
@@ -25,10 +25,17 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aligulzar.pakswap"
+      "bundleIdentifier": "com.aligulzar.pakswap",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7715285157592422~4148160627"
+      }
     },
     "android": {
-      "package": "com.aligulzar.pakswap"
+      "package": "com.aligulzar.pakswap",
+      "versionCode": 3,
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7715285157592422~4148160627"
+      }
     }
   }
 }

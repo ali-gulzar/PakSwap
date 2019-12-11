@@ -11,6 +11,7 @@ import Colors from '../constants/Colors';
 import AddItem from './AddItem';
 import RemoveItem from './RemoveItem';
 import Feedback from './Feedback';
+import {AdMobInterstitial} from 'expo-ads-admob';
 
 const avatar = require('../assets/images/avatar_1.jpg')
 
@@ -66,6 +67,13 @@ class Browse extends Component {
   componentWillMount() {
     this.setState({ categories: this.props.categories });
     this.getUserData();
+    this.showAdd();
+  }
+
+  showAdd = async () => {
+    AdMobInterstitial.setAdUnitID("ca-app-pub-7715285157592422/2790028685");
+    await AdMobInterstitial.requestAdAsync();
+    await AdMobInterstitial.showAdAsync();
   }
 
   getUserData = () => {
